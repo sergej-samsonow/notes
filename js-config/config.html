@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head><title>Configuration of javascript objects</title></head>
+<body>
+<!--
+ Problem:  Pass initial configuration of js objects without using inline
+           <scrpit> elements especially if configuraion over data-
+           attribute is not possible or to complicated.
+ Solution: Key : Value table <table> :)
+
+ 1. Css class config is an marker of the configuration structure is 
+    hidden over css in production display:none but can easy be enabled 
+    over for debug for over just .config { display : block }
+
+ 2. Configuration entry is reperesented by tr tag with td[0] for key
+    and td[1] for value
+-->
+
+    <div id="fragment_result">BLA</div>
+
+
+<!--
+ We are done with content start with js write aggregated configuration first
+ then load js scripts.
+-->
+<table class="config">
+    <tr><td>reporter.endpoint</td><td>//amazing-service.com/reporting</td></tr>
+    <tr><td>result_list.size</td><td>12</td></tr>
+    <tr><td>alert</td><td>bla</td></tr>
+</table>
+<script type="text/javascript" src="lib.js"></script>
+<script type="text/javascript" src="config.js"></script>
+
+</body></html>
