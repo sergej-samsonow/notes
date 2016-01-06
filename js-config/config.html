@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
-<head><title>Configuration of javascript objects</title></head>
+<head>
+    <title>Configuration of javascript objects</title>
+    <link rel="stylesheet" type="text/css" href="simple.css">
+</head>
 <body>
 <!--
  Problem:  Pass initial configuration of js objects without using inline
@@ -8,7 +11,7 @@
            attribute is not possible or to complicated.
  Solution: Key : Value table <table> :)
 
- 1. Css class config is an marker of the configuration structure is 
+ 1. Css class config is a marker of the configuration structure is 
     hidden over css in production display:none but can easy be enabled 
     over for debug for over just .config { display : block }
 
@@ -25,7 +28,7 @@
 -->
 <table class="config">
     <tr><td>reporter.endpoint</td><td>//amazing-service.com/reporting</td></tr>
-    <tr><td>result_list.size</td><td>12</td></tr>
+    <tr><td>mssing.entry</td><td>42</td></tr>
     <tr><td>alert</td><td>bla</td></tr>
 </table>
 <script type="text/javascript" src="lib.js"></script>
