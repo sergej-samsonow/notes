@@ -1,41 +1,59 @@
 (function() {
     var module = function() {
-        var modules = {};
+        var namespce    = '';
+        var modules     = {};
         return {
+            start : function(current) {
+                namespce = current;
+            },
             use : function(name) {
                 return modules[name];
             },
             publish : function(name, entry) {
-                modules[name] = entry;
+                modules[namespce + '.' + name] = entry;
             }
         }
     }();
-    var use         = module.use;
+    var use        = module.use;
     var publish    = module.publish;
+    var start      = module.start;
     module = undefined;
     
     // bad module
-    (function(use, publish) {
+    start('shared.badmodule');
+    (function(use, publish, start) {
         use = undefined;
         publish = undefined;
-    })(use, publish);
+    })(use, publish, undefined);
 
     // Module logger
-    (function(use, publish) {
+    start('shared.logger');
+    (function(use, publish, start) {
+        publish('log', function(message) {
+            console.log(message); 
+        });
+    })(use, publish, undefined);
+
+    // Module improver logger
+    start('shared.logger.v2');
+    (function(use, publish, start) {
+
         var counter = 0;
         publish('log', function(message) {
             counter ++;
-            console.log(message); 
+            console.log('[LOG]' + message); 
         });
         publish('log_counts', function() {    
             return counter;
         });
-    })(use, publish);
+
+    })(use, publish, undefined);
 
 
     // Calculator
-    (function(use, publish) {
-        var log = use('log');
+    start('shared.calculator');
+    (function(use, publish, start) {
+        var log = use('shared.logger.log');
         var calulator = function() {
             return {
                 addition : function(a, b) {
@@ -51,14 +69,15 @@
             } 
         }(); 
         publish('calulator', calulator);
-    })(use, publish);
+    })(use, publish, undefined);
 
 
     // Application module
-    (function(use, publish) {
-        var log     = use('log');
-        var count   = use('log_counts');
-        var calc    = use('calulator');
+    start('pages.calc');
+    (function(use, publish, start) {
+        var log     = use('shared.logger.v2.log');
+        var count   = use('shared.logger.v2.log_counts');
+        var calc    = use('shared.calculator.calulator');
         var a, b, r, i, add, sub;
         var check = function(a, b) {
             if (isNaN(a)) {
@@ -96,6 +115,6 @@
                 alert('Logs count: ' + count());
             });
         });
-    })(use, publish);
+    })(use, publish, undefined);
 
 })();
