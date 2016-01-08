@@ -5,31 +5,36 @@
             use : function(name) {
                 return modules[name];
             },
-            register : function(name, entry) {
+            publish : function(name, entry) {
                 modules[name] = entry;
             }
         }
     }();
     var use         = module.use;
-    var register    = module.register;
+    var publish    = module.publish;
     module = undefined;
     
+    // bad module
+    (function(use, publish) {
+        use = undefined;
+        publish = undefined;
+    })(use, publish);
 
     // Module logger
-    (function() {
+    (function(use, publish) {
         var counter = 0;
-        register('log', function(message) {
+        publish('log', function(message) {
             counter ++;
             console.log(message); 
         });
-        register('log_counts', function() {    
+        publish('log_counts', function() {    
             return counter;
         });
-    })();
+    })(use, publish);
 
 
     // Calculator
-    (function() {
+    (function(use, publish) {
         var log = use('log');
         var calulator = function() {
             return {
@@ -45,12 +50,12 @@
                 }
             } 
         }(); 
-        register('calulator', calulator);
-    })();
+        publish('calulator', calulator);
+    })(use, publish);
 
 
     // Application module
-    (function() {
+    (function(use, publish) {
         var log     = use('log');
         var count   = use('log_counts');
         var calc    = use('calulator');
@@ -91,6 +96,6 @@
                 alert('Logs count: ' + count());
             });
         });
-    })();
+    })(use, publish);
 
 })();
