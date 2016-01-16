@@ -1,10 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="dev-env-setup" basedir=".">
     <loadproperties srcFile="tools/tools.properties" /> 
-    <target name="install"  description="Setup application directory">
-        <echoproperties prefix="tools" />
+
+    <target name="install"  description="Setup application directory"   depends="-prepare" unless="${application.dir.exists}">
+        <antcall target="-install-tomcat" />
     </target>
-    <target name="clean"    description="Cleanup application directory" />
+
+    <target name="clean"    description="Cleanup application directory">
+        <delete dir="application" />
+    </target>
+
     <target name="start"    description="Start application environment" />
     <target name="stop"     description="Stop application environment" />
+
+    <target name="-prepare">
+        <available file="application" type="dir" property="application.dir.exists" />
+    </target>
+
+    <target name="-install-tomcat">
+        <copy file="tools/${tools.tomcat}.zip" tofile="application/${tools.tomcat}.zip" />
+        <unzip src="application/${tools.tomcat}.zip" dest="application" />
+        <delete file="application/${tools.tomcat}.zip" />
+        <property name="catalina.home" value="application/${tools.tomcat}" />
+        <property name="catalina.base" value="application/catalina/base" />
+        <copy file="${catalina.home}/conf/server.xml"       todir="${catalina.base}/conf" />
+        <copy file="${catalina.home}/conf/tomcat-users.xml" todir="${catalina.base}/conf" />
+        <copy file="${catalina.home}/conf/web.xml"          todir="${catalina.base}/conf" />
+        <mkdir dir="${catalina.base}/temp" />
+        <mkdir dir="${catalina.base}/logs" />
+        <mkdir dir="${catalina.base}/webapps" />
+    </target>
+
 </project>
