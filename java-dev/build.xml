@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="dev-env-setup" basedir=".">
+    <loadproperties srcFile="tools/tools.properties" /> 
+    <target name="install"  description="Setup application directory">
+        <echoproperties prefix="tools" />
+    </target>
     <target name="clean"    description="Cleanup application directory" />
-    <target name="install"  description="Setup application directory" />
     <target name="start"    description="Start application environment" />
     <target name="stop"     description="Stop application environment" />
 </project>
