@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="dev-env-setup" basedir=".">
+    <loadproperties srcFile="components/components.properties" />
+    <property name="catalina.home" value="${basedir}/application/catalina/home" />
+    <property name="catalina.base" value="${basedir}/application/catalina/base" />
+
+    <target name="-check-application-dir">
+        <available file="application" type="dir" property="application.dir.exists" />
+    </target>
+
+    <target name="clean"    description="Cleanup application directory">
+        <delete dir="application" />
+    </target>    
+
+    <target name="install"  description="Setup application directory"
+        depends="-check-application-dir" unless="${application.dir.exists}">
+        <antcall target="-install-atomjee" />
+    </target>
+
+   <target name="-install-atomjee">
+        <copy file="components/${components.tomee}.zip"  tofile="application/${components.tomee}.zip" />
+        <unzip src="application/${components.tomee}.zip" dest="${catalina.home}" />
+        <delete file="application/${components.tomee}.zip" />
+        <move file="${catalina.home}/${components.tomee}" tofile="${basedir}/application/catalina/tmp" />
+        <move file="${basedir}/application/catalina/tmp" tofile="${basedir}/application/catalina/home" />
+        <delete>
+            <fileset dir="${catalina.home}/bin">
+                <include name="*.bat" />
+                <include name="*.exe" />
+                <include name="*.bat.original" />
+            </fileset>
+        </delete>
+        <delete dir="${catalina.home}/webapps/docs" />
+        <delete dir="${catalina.home}/webapps/host-manager" />
+        <delete dir="${catalina.home}/webapps/manager" />
+
+        <!-- 
+        TODO secure by default
+        http://security-24-7.com/hardening-guide-for-tomcat-8-on-redhat-6-5-64bit-edition/
+        http://devtidbits.com/2015/05/13/secure-and-harden-apache-tomcats-ssltls/
+        -->
+
+        <copy file="${catalina.home}/conf/server.xml"       todir="${catalina.base}/conf" />
+        <copy file="${catalina.home}/conf/tomcat-users.xml" todir="${catalina.base}/conf" />
+        <copy file="${catalina.home}/conf/web.xml"          todir="${catalina.base}/conf" />
+        <mkdir dir="${catalina.base}/temp" />
+        <mkdir dir="${catalina.base}/logs" />
+        <mkdir dir="${catalina.base}/webapps" />
+        <chmod perm="u+x">
+            <fileset dir="${catalina.home}/bin">
+                <include name="**/*.sh" />
+            </fileset>
+        </chmod>
+    </target>
+
+    <target name="start"  description="Start tomcat">
+        <exec executable="${catalina.home}/bin/startup.sh" >
+            <env key="CATALINA_HOME" value="${catalina.home}" />
+            <env key="CATALINA_BASE" value="${catalina.base}" />
+        </exec>
+    </target>
+
+    <target name="stop"  description="Stop tomcat">
+        <exec executable="${catalina.home}/bin/shutdown.sh" >
+            <env key="CATALINA_HOME" value="${catalina.home}" />
+            <env key="CATALINA_BASE" value="${catalina.base}" />
+        </exec>
+    </target>
+
+</project>
