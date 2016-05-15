@@ -1,0 +1,58 @@
+Start eclipse on linux with GTK=2
+=================================
+env SWT_GTK3=0 /path/to/eclipse/eclipse
+
+
+Setup jdk tools on linux
+========================
+/etc/profile.d/jdk.sh
+
+export JAVA_HOME=/opt/jdk_version
+export ANT_HOME=/opt/ant_version
+export M2_HOME=/opt/maven_version
+export PATH=$PATH:$JAVA_HOME/bin:$ANT_HOME/bin:$M2_HOME/bin
+
+(works after reboot or new login)
+
+
+Setup oracle java as open-jdk alternative
+=========================================
+
+tar -xzf jdk.tar.gz -C /opt
+
+update-alternatives --query java
+update-alternatives --query javac
+
+update-alternatives --install /usr/bin/java java /opt/jdk_version/bin/java 2000
+update-alternatives --install /usr/bin/javac javac /opt/jdk_version/bin/javac 200
+
+update-alternatives --config java
+update-alternatives --config javac
+
+
+Setup jdk on in docker container
+================================
+wget --header='Cookie: oraclelicense=accept-securebackup-cookie'  http://download.oracle.com/otn-pub/java/jdk/8u91-b14/jdk-8u91-linux-x64.tar.gz
+tar -xzf jdk-8u91-linux-x64.tar.gz -C /opt
+ln  -s /opt/jdk1.8.0_91 /opt/jdk
+rm -rf /opt/jdk/*src.zip \
+       /opt/jdk/lib/missioncontrol \
+       /opt/jdk/lib/visualvm \
+       /opt/jdk/lib/*javafx* \
+       /opt/jdk/jre/lib/plugin.jar \
+       /opt/jdk/jre/lib/ext/jfxrt.jar \
+       /opt/jdk/jre/bin/javaws \
+       /opt/jdk/jre/lib/javaws.jar \
+       /opt/jdk/jre/lib/desktop \
+       /opt/jdk/jre/plugin \
+       /opt/jdk/jre/lib/deploy* \
+       /opt/jdk/jre/lib/*javafx* \
+       /opt/jdk/jre/lib/*jfx* \
+       /opt/jdk/jre/lib/amd64/libdecora_sse.so \
+       /opt/jdk/jre/lib/amd64/libprism_*.so \
+       /opt/jdk/jre/lib/amd64/libfxplugins.so \
+       /opt/jdk/jre/lib/amd64/libglass.so \
+       /opt/jdk/jre/lib/amd64/libgstreamer-lite.so \
+       /opt/jdk/jre/lib/amd64/libjavafx*.so \
+       /opt/jdk/jre/lib/amd64/libjfx*.so \
+
